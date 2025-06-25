@@ -1,6 +1,7 @@
 // index.js
 
 // 1. --- IMPORTS ---
+import "dotenv/config";
 // Import the OpenAI library to interact with the API.
 import OpenAI from "openai";
 // Import the `exec` function from Node.js's child_process module to run shell commands.
@@ -19,7 +20,9 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
 if (!OPENAI_API_KEY) {
   console.error("❌ Error: OPENAI_API_KEY environment variable is not set.");
-  console.log("Please set your OpenAI API key in the .env file or as an environment variable.");
+  console.log(
+    "Please set your OpenAI API key in the .env file or as an environment variable."
+  );
   process.exit(1);
 }
 
@@ -53,11 +56,11 @@ const TOOLS_MAP = {
 // 4. --- THE SYSTEM PROMPT ---
 // This is the core instruction set for our AI agent. It defines its persona, capabilities, rules, and workflow.
 const SYSTEM_PROMPT = `
-You are an helpfull AI Assistant who is designed to resolve user query.
+You are an helpfull AI Assistant who is designed to resolve user query/issue.
 You work on START, THINK, ACTION, OBSERVE and OUTPUT Mode.
 
-In the start phase, user gives a query to you.
-Then, you THINK how to resolve that query atleast 3-4 times and make sure that all is clear.
+In the start phase, user gives a query/issue to you.
+Then, you THINK how to resolve that query/issue atleast 3-4 times and make sure that all is clear.
 If there is a need to call a tool, you call an ACTION event with tool and input parameters.
 If there is an action call, wait for the OBSERVE that is output of the tool.
 Based on the OBSERVE from prev step, you either output or repeat the loop.
@@ -82,7 +85,7 @@ THINK: The output of getWeatherInfo for patiala is 32 Degree C
 OUTPUT: Hey, The weather of Patiala is 32 Degree C which is quite hot 🥵
 
 Output Example:
-{ "role": "user", "content": "What is weather of Patiala?" }
+{ "step": "start", "role": "user", "content": "What is weather of Patiala?" }
 { "step": "think", "content": "The user is asking for the weather of Patiala." }
 { "step": "think", "content": "From the available tools, I must call getWeatherInfo tool for patiala as input." }
 { "step": "action", "tool": "getWeatherInfo", "input": "Patiala" }
@@ -98,9 +101,9 @@ Output Format:
 function getUserInput(question) {
   const rl = readline.createInterface({
     input: process.stdin,
-    output: process.stdout
+    output: process.stdout,
   });
-  
+
   return new Promise((resolve) => {
     rl.question(question, (answer) => {
       rl.close();
@@ -120,7 +123,7 @@ async function processQuery(userQuery) {
   ];
 
   // Add the user's query to the message history.
-  messages.push({ role: "user", content: userQuery });
+  messages.push({ step: "start", role: "user", content: userQuery });
   console.log(`\n👤 User: ${userQuery}\n`);
 
   // The main loop where the AI reasons and acts.
@@ -201,23 +204,25 @@ async function processQuery(userQuery) {
 async function main() {
   console.log("🤖 AI Assistant Started!");
   console.log("Type your queries and I'll help you solve them.\n");
-  
+
   while (true) {
     // Get user query
     const userQuery = await getUserInput("\n📝 Enter your query: ");
-    
+
     if (!userQuery) {
       console.log("Please enter a valid query.");
       continue;
     }
-    
+
     // Process the query
     await processQuery(userQuery);
-    
+
     // Ask for next action
     console.log("\n" + "=".repeat(50));
-    const nextAction = await getUserInput("\n🔄 What would you like to do next?\n1. Ask another query\n2. Exit\nEnter your choice (1 or 2): ");
-    
+    const nextAction = await getUserInput(
+      "\n🔄 What would you like to do next?\n1. Ask another query\n2. Exit\nEnter your choice (1 or 2): "
+    );
+
     if (nextAction === "2" || nextAction.toLowerCase() === "exit") {
       console.log("\n👋 Goodbye! Thanks for using the AI Assistant.");
       process.exit(0);

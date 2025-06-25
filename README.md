@@ -12,47 +12,77 @@ An interactive AI assistant powered by OpenAI that can execute system commands a
 
 ## Prerequisites
 
-- Node.js (v14 or higher)
+- Node.js (v20.19.1 or higher)
+- npm or yarn
 - OpenAI API key
 
 ## Setup
 
+### Quick Setup
+
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd build-your-own-curser-ai
    ```
 
-2. **Install dependencies**
+2. **Use correct Node.js version (if using nvm)**
+
    ```bash
-   npm install openai
+   nvm use
    ```
 
-3. **Configure environment variables**
+3. **Install dependencies**
+
    ```bash
-   cp .env.example .env
+   npm install
    ```
+
+4. **Setup environment variables**
+
+   ```bash
+   npm run setup
+   ```
+
+5. **Configure your API key**
    Edit `.env` and add your OpenAI API key:
    ```
    OPENAI_API_KEY=your_actual_api_key_here
    ```
 
-4. **Get OpenAI API Key**
-   - Visit [OpenAI Platform](https://platform.openai.com/api-keys)
-   - Create a new API key
-   - Copy and paste it in your `.env` file
+### Get OpenAI API Key
+
+- Visit [OpenAI Platform](https://platform.openai.com/api-keys)
+- Create a new API key
+- Copy and paste it in your `.env` file
 
 ## Usage
 
-1. **Start the assistant**
-   ```bash
-   node index.js
-   ```
+### Production Mode
 
-2. **Interact with the AI**
-   - Enter your query when prompted
-   - The AI will think through the problem and execute commands if needed
-   - Choose to continue with another query or exit
+```bash
+npm start
+```
+
+### Development Mode (with auto-restart)
+
+```bash
+npm run dev
+```
+
+### Interaction
+
+- Enter your query when prompted
+- The AI will think through the problem and execute commands if needed
+- Choose to continue with another query or exit
+
+## Available Scripts
+
+- `npm start` - Run the assistant in production mode
+- `npm run dev` - Run with auto-restart on file changes
+- `npm run setup` - Quick setup of environment variables
+- `npm test` - Run tests (not implemented yet)
 
 ## How It Works
 
@@ -83,9 +113,24 @@ The AI assistant follows a structured workflow:
 
 ```
 ├── index.js          # Main application
-├── .env.example      # Environment variables template
-├── .gitignore        # Git ignore rules
-└── README.md         # This file
+├── package.json      # Node.js dependencies and scripts
+├── .nvmrc           # Node.js version specification
+├── .env.example     # Environment variables template
+├── .gitignore       # Git ignore rules
+└── README.md        # This file
+```
+
+## Node.js Version Management
+
+This project uses Node.js v18.17.0. If you're using nvm:
+
+```bash
+# Install and use the specified Node.js version
+nvm install
+nvm use
+
+# Verify version
+node --version
 ```
 
 ## Contributing
