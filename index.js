@@ -14,8 +14,14 @@ import readline from "node:readline";
 // Promisify the exec function so we can use it with async/await for cleaner code.
 const execPromise = promisify(exec);
 
-// Place your OpenAI API key here. It's best practice to use environment variables for this.
-const OPENAI_API_KEY = "YOUR_OPENAI_API_KEY";
+// Get OpenAI API key from environment variables
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+
+if (!OPENAI_API_KEY) {
+  console.error("❌ Error: OPENAI_API_KEY environment variable is not set.");
+  console.log("Please set your OpenAI API key in the .env file or as an environment variable.");
+  process.exit(1);
+}
 
 // Create a new instance of the OpenAI client.
 const client = new OpenAI({ apiKey: OPENAI_API_KEY });
